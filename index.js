@@ -42,7 +42,7 @@ const connect = new AWS.Connect({
 // );
 
 //make me recursive
-const getAmazon = (nt = null, resultsHolder = []) => {
+const getAmazonQueues = (nt = null, resultsHolder = []) => {
   connect.listQueues(
     { InstanceId: process.env.INSTANCE, MaxResults: 100, NextToken: nt },
     (err, data) => {
@@ -60,4 +60,4 @@ const getAmazon = (nt = null, resultsHolder = []) => {
     }
   );
 };
-getAmazon()
+getAmazonQueues()
