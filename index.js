@@ -62,32 +62,28 @@ const getAmazonQueues = (nt = null, resultsHolder = []) => {
 };
 // getAmazonQueues()
 
-const getMetricData=(nt=null, resArr)=>{
+const getMetricData=(nt=null, resArr=[])=>{
     connect.getMetricData({
         EndTime:1580400000, 
         Filters:{
-            Channels:['VOICE', 'CHAT'], 
+            // Channels:['VOICE'], 
             Queues:[
                 '0002ddc3-6fdb-4bec-9fde-d555e4bde81b'
             ]
         }, 
         HistoricalMetrics:[
             {
-                Name:'CONTACTS_QUEUED', 
+                Name:'API_CONTACTS_HANDLED', 
                 Statistic:'SUM', 
-                Threshold:{
-                    Comparison:'LT', 
-                    ThresholdValue:100
-                },
                 Unit:'COUNT'
             }, 
         ], 
         InstanceId:process.env.INSTANCE, 
         StartTime:1580371200, 
-        Groupings:[
-            'QUEUE'
-        ], 
-        MaxResults:100, 
+        // Groupings:[
+        //     'QUEUE'
+        // ], 
+        // MaxResults:100, 
         NextToken:nt
 
     }, function(err, data){
