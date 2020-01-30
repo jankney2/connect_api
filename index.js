@@ -44,7 +44,7 @@ const connect = new AWS.Connect({
 //make me recursive
 const getAmazonQueues = (nt = null, resultsHolder = []) => {
   connect.listQueues(
-    { InstanceId: process.env.INSTANCE, MaxResults: 100, NextToken: nt },
+    { InstanceId: process.env.INSTANCE, MaxResults: 1000, NextToken: nt },
     (err, data) => {
       if (err) {
         console.log(err, "err with listqueues");
@@ -53,11 +53,53 @@ const getAmazonQueues = (nt = null, resultsHolder = []) => {
         if(data.NextToken){
             getAmazon(data.NextToken, resultsHolder)
         }else {
-            console.log(resultsHolder.length, 'final res length')
+            console.log(resultsHolder[0], 'final res length')
             return resultsHolder
         }
       }
     }
   );
 };
-getAmazonQueues()
+// getAmazonQueues()
+
+const getMetricData=(nt=null, resArr)=>{
+    connect.getMetricData({
+        EndTime:1580400000, 
+        Filters:{
+            Channels:['VOICE', 'CHAT'], 
+            Queues:[
+                '0002ddc3-6fdb-4bec-9fde-d555e4bde81b'
+            ]
+        }, 
+        HistoricalMetrics:[
+            {
+                Name:'CONTACTS_QUEUED', 
+                Statistic:'SUM', 
+                Threshold:{
+                    Comparison:'LT', 
+                    ThresholdValue:100
+                },
+                Unit:'COUNT'
+            }, 
+        ], 
+        InstanceId:process.env.INSTANCE, 
+        StartTime:1580371200, 
+        Groupings:[
+            'QUEUE'
+        ], 
+        MaxResults:100, 
+        NextToken:nt
+
+    }, function(err, data){
+        if(err){
+            console.log(err, 'err with get')
+        }else {
+
+            resArr=[...data.MetricResults, ...resArr]
+            console.log(data.MetricResults.length)
+            // getMetricData(data.NextToken, resArr)
+        }
+    })
+}
+
+getMetricData()
