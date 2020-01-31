@@ -113,4 +113,3 @@ const getAmazonQueues=(nt = null, resultsHolder = []) =>{
   
 };
 
-getAmazonQueues()
